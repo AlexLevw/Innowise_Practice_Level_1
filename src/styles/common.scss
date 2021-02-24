@@ -1,0 +1,83 @@
+* {
+  box-sizing: border-box;
+}
+
+ul,ol,p {
+  padding: 0;
+  margin: 0;
+}
+a {
+  text-decoration: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(230, 230, 230);
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+//* ======================== *//
+
+.c-input {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  
+  p {
+    margin-bottom: 4px;
+  }
+  input {
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid rgb(182, 182, 182);
+    font-size: 1em;
+  }
+  textarea {
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid rgb(182, 182, 182);
+    font-size: 0.9em;
+    resize: none;
+  }
+}
+
+.c-btn-blue {
+  width: 140px;
+  height: 34px;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 1.1em;
+  background-color: #007ab8;
+}
+
+.c-btn-orange {
+  width: 140px;
+  height: 34px;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 1.1em;
+  background-color: #e85d04;
+}

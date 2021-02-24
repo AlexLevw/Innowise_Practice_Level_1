@@ -17,7 +17,7 @@ export default function PrivateRoute({
     <Route
       {...rest}
       render={(props): React.ReactNode => {
-        return currentUser ? (
+        return currentUser.uid ? (
           <Component {...props} />
         ) : (
           <Redirect to="/login" />

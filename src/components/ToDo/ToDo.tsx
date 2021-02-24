@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./_ToDo.module.scss";
 import { db } from "../../firebase";
+import CreateTask from "./CreateTask/CreateTask";
 
 interface IToDo {
   todoId: string;
@@ -12,22 +13,22 @@ interface IToDo {
 
 export default function ToDo(): JSX.Element {
   const [toDos, setToDos] = useState<IToDo[]>([]);
+  const [creation, setCreation] = useState<boolean>(false);
 
-  function createDays(): JSX.Element[] {
-    const dataArr = new Array(2).fill({
-      title: "title",
-      number: "number",
-    });
-    return dataArr.map((item, id) => {
-      return (
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        <div className={styles.calendarDay} key={id!}>
-          <p>{item.title}</p>
-          <p>{item.number}</p>
-        </div>
-      );
-    });
-  }
+  // function createDays(): JSX.Element[] {
+  //   const dataArr = new Array(2).fill({
+  //     title: "title",
+  //     number: "number",
+  //   });
+  //   return dataArr.map((item, id) => {
+  //     return (
+  //       <div className={styles.calendarDay} key={id!}>
+  //         <p>{item.title}</p>
+  //         <p>{item.number}</p>
+  //       </div>
+  //     );
+  //   });
+  // }
 
   function createToDos(list: IToDo[]) {
     return list.map((item) => {
@@ -64,12 +65,20 @@ export default function ToDo(): JSX.Element {
         <p className={styles.title}>To-Do</p>
         <Link to="profile">Profile</Link>
       </div>
-      <div className={styles.calendar}>{createDays()}</div>
+      {/* <div className={styles.calendar}>{createDays()}</div> */}
       <div className={styles.tasks}>
         <p className={styles.tasksTitle}>Tasks:</p>
-        {createToDos(toDos)}
-        <button type="button">Create task</button>
+        <div className={styles.tasksList}>{createToDos(toDos)}</div>
+        <button
+          className="c-btn-orange"
+          style={{ width: "100%" }}
+          type="button"
+          onClick={() => setCreation(true)}
+        >
+          Create task
+        </button>
       </div>
+      {creation && <CreateTask closeCreator={() => setCreation(false)} />}
     </div>
   );
 }
