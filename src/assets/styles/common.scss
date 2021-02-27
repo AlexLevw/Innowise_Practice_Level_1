@@ -62,22 +62,67 @@ code {
   }
 }
 
-.c-btn-blue {
+.c-btn-blue, .c-btn-orange {
   width: 140px;
   height: 34px;
   border: 0;
   border-radius: 5px;
   color: #fff;
   font-size: 1.1em;
+  transition: opacity .2s ease-out;
+  cursor: pointer;
+
+  &:hover {
+    opacity: .8;
+  }
+
+  &:disabled {
+    background-color: gray;
+    opacity: .4;
+    cursor: default;
+
+    &:hover {
+      opacity: .4;
+    }
+  }
+}
+
+.c-btn-blue {
   background-color: #007ab8;
 }
 
 .c-btn-orange {
-  width: 140px;
-  height: 34px;
-  border: 0;
-  border-radius: 5px;
-  color: #fff;
-  font-size: 1.1em;
   background-color: #e85d04;
+}
+
+.c-closeCross {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 0;
+  border:0;
+  background-color: rgba(#000000, .0);
+  opacity: 0.7;
+  transition: opacity .2s ease-out;
+
+  &:hover {
+    opacity: 1;
+  }
+  &:before, &:after {
+    position: absolute;
+    left: 13px;
+    top: 0;
+    content: ' ';
+    height: 28px;
+    width: 2px;
+    background-color: #333;
+  }
+  &:before {
+    transform: rotate(45deg);
+  }
+  &:after {
+    transform: rotate(-45deg);
+  }  
 }

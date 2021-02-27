@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import styles from "./_Profile.module.scss";
 import { useAuth } from "../../contexts/AuthContext";
+import Header from "../Header/Header";
 
 export default function Profile(): JSX.Element {
   const [error, setError] = useState<string>();
@@ -19,13 +20,20 @@ export default function Profile(): JSX.Element {
 
   return (
     <div className={styles.container}>
+      <Header page="profile" />
       {error && error}
-      Profile: {currentUser?.email}
-      <div>
-        <button type="button" onClick={handleLogout}>
+      <div className={styles.main}>
+        Profile: {currentUser.email}
+        <Link className={styles.update} to="/update-profile">
+          Update Profile
+        </Link>
+        <button
+          className={styles.logoutBtn}
+          type="button"
+          onClick={handleLogout}
+        >
           Log Out
         </button>
-        <Link to="/update-profile">Update Profile</Link>
       </div>
     </div>
   );

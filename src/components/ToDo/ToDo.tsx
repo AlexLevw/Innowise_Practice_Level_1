@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import styles from "./_ToDo.module.scss";
-import { db } from "../../firebase";
+import { getToDosData, editToDo, IToDo } from "../../events/dbEvents";
+import Header from "../Header/Header";
 import CreateTask from "./CreateTask/CreateTask";
-
-interface IToDo {
-  todoId: string;
-  title: string;
-  body: string;
-  createdAt: string;
-}
+import Task from "./Task/Task";
 
 export default function ToDo(): JSX.Element {
   const [toDos, setToDos] = useState<IToDo[]>([]);
   const [creation, setCreation] = useState<boolean>(false);
+  const [selectedTask, setSelectedTask] = useState<IToDo | null>(null);
 
   // function createDays(): JSX.Element[] {
   //   const dataArr = new Array(2).fill({
@@ -30,44 +25,67 @@ export default function ToDo(): JSX.Element {
   //   });
   // }
 
-  function createToDos(list: IToDo[]) {
+  const getToDos = (): void => {
+    getToDosData().then((data) => {
+      const ToDos: IToDo[] = [];
+      data.forEach((doc) => {
+        ToDos.push({
+          todoId: doc.id,
+          title: doc.data().title,
+          body: doc.data().body,
+          isComplete: doc.data().isComplete,
+          createdAt: doc.data().createdAt,
+        });
+      });
+      setToDos(ToDos);
+    });
+  };
+
+  function changeToDoStatus(
+    e: React.ChangeEvent<HTMLInputElement>,
+    todo: IToDo
+  ) {
+    e.target.readOnly = true;
+    const newToDo = {
+      todoId: todo.todoId,
+      isComplete: !todo.isComplete,
+    };
+    editToDo(newToDo as IToDo).then(() => getToDos());
+    e.target.readOnly = false;
+  }
+
+  function createToDos(list: IToDo[]): JSX.Element[] {
     return list.map((item) => {
       return (
-        <div className={styles.task} key={item.todoId}>
+        <div
+          className={styles.task}
+          key={item.todoId}
+          onClick={() => setSelectedTask(item)}
+          role="presentation"
+        >
+          <div className={styles.taskCheckbox}>
+            <input
+              type="checkbox"
+              checked={item.isComplete}
+              onChange={(e) => changeToDoStatus(e, item)}
+              onClick={(e) => e.stopPropagation()}
+            />
+            <span> </span>
+          </div>
           <p>{item.title}</p>
-          <p>{item.body}</p>
         </div>
       );
     });
   }
 
-  useEffect(() => {
-    db.collection("ToDos")
-      .orderBy("createdAt", "desc")
-      .get()
-      .then((data) => {
-        const ToDos: IToDo[] = [];
-        data.forEach((doc) => {
-          ToDos.push({
-            todoId: doc.id,
-            title: doc.data().title,
-            body: doc.data().body,
-            createdAt: doc.data().createdAt,
-          });
-        });
-        setToDos(ToDos);
-      });
-  });
+  useEffect(() => getToDos(), []);
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <p className={styles.title}>To-Do</p>
-        <Link to="profile">Profile</Link>
-      </div>
+      <Header page="todo" />
       {/* <div className={styles.calendar}>{createDays()}</div> */}
       <div className={styles.tasks}>
-        <p className={styles.tasksTitle}>Tasks:</p>
+        <p className={styles.tasksTitle}>Tasks</p>
         <div className={styles.tasksList}>{createToDos(toDos)}</div>
         <button
           className="c-btn-orange"
@@ -78,7 +96,19 @@ export default function ToDo(): JSX.Element {
           Create task
         </button>
       </div>
-      {creation && <CreateTask closeCreator={() => setCreation(false)} />}
+      {creation && (
+        <CreateTask
+          closeCreator={() => setCreation(false)}
+          getToDos={getToDos}
+        />
+      )}
+      {selectedTask && (
+        <Task
+          closeTask={() => setSelectedTask(null)}
+          getToDos={getToDos}
+          task={selectedTask}
+        />
+      )}
     </div>
   );
 }

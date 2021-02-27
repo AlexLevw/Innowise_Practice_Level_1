@@ -8,6 +8,7 @@
   justify-content: center;
   align-items: center;
   background: rgba($color: #000000, $alpha: .5);
+  z-index: 2;
 }
 
 .main {
@@ -20,37 +21,6 @@
   padding: 5px;
   border-radius: 10px;
   background-color: #fff;
-}
-
-.closeCross {
-  width: 28px;
-  height: 28px;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  padding: 0;
-  border:0;
-  background-color: rgba(#000000, .0);
-  opacity: 0.6;
-
-  &:hover {
-    opacity: 1;
-  }
-  &:before, &:after {
-    position: absolute;
-    left: 13px;
-    top: 0;
-    content: ' ';
-    height: 28px;
-    width: 2px;
-    background-color: #333;
-  }
-  &:before {
-    transform: rotate(45deg);
-  }
-  &:after {
-    transform: rotate(-45deg);
-  }  
 }
 
 .title {

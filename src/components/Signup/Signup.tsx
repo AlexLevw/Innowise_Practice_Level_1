@@ -20,14 +20,15 @@ export default function Signup(): JSX.Element {
         setError("");
         setLoading(true);
         await signup(emailRef.current.value, passwordRef.current.value);
+        setLoading(false);
         history.push("/");
       } catch {
         setError("Failed to create an account");
       }
     } else {
+      setLoading(false);
       setError("Password do not match");
     }
-    setLoading(false);
   }
 
   return (

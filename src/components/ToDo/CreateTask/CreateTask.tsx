@@ -1,13 +1,15 @@
 import React, { useRef, useState } from "react";
 import styles from "./_CreateTask.module.scss";
-import { db } from "../../../firebase";
+import { addToDo, INewToDo } from "../../../events/dbEvents";
 
 interface ICreateTaskProps {
   closeCreator: CallableFunction;
+  getToDos: CallableFunction;
 }
 
 export default function CreateTask({
   closeCreator,
+  getToDos,
 }: ICreateTaskProps): JSX.Element {
   const titleRef = useRef<HTMLInputElement>({} as HTMLInputElement);
   const bodyRef = useRef<HTMLTextAreaElement>({} as HTMLTextAreaElement);
@@ -20,27 +22,27 @@ export default function CreateTask({
     }
   };
 
-  async function handleCreateTask(e: React.FormEvent) {
+  function handleCreateTask(e: React.FormEvent) {
     e.preventDefault();
 
     setLoading(true);
 
-    const newTask = {
+    const newTask: INewToDo = {
       title: titleRef.current.value,
       body: bodyRef.current.value,
+      isComplete: false,
       createdAt: new Date().toISOString(),
     };
 
-    await db
-      .collection("ToDos")
-      .add(newTask)
+    addToDo(newTask)
       .then(() => {
         setLoading(false);
         closeCreator();
+        getToDos();
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
-        setError(err);
+        setError("Error");
       });
   }
 
@@ -53,7 +55,7 @@ export default function CreateTask({
       <div className={styles.main}>
         <p className={styles.title}>Create Task</p>
         <button
-          className={styles.closeCross}
+          className="c-closeCross"
           onClick={() => closeCreator()}
           type="button"
           aria-label="Close"

@@ -18,11 +18,12 @@ export default function Login(): JSX.Element {
       setError("");
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
+      setLoading(false);
       history.push("/");
     } catch {
+      setLoading(false);
       setError("Failed to sign in");
     }
-    setLoading(false);
   }
 
   return (
