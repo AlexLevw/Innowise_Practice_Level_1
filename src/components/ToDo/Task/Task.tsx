@@ -46,11 +46,11 @@ export default function Task({
 
     const newToDo = {
       todoId: task.todoId,
-      title: task.title,
-      body: task.body,
+      title: titleRef.current.value,
+      body: bodyRef.current.value,
     };
 
-    editToDo(newToDo as IToDo)
+    editToDo(localStorage.userId, newToDo as IToDo)
       .then(() => {
         closeTask();
         getToDos();
@@ -62,7 +62,7 @@ export default function Task({
     setError("");
     setLoading(true);
 
-    removeToDo(task.todoId)
+    removeToDo(localStorage.userId, task.todoId)
       .then(() => {
         closeTask();
         getToDos();

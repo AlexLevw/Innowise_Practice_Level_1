@@ -34,7 +34,7 @@ export default function CreateTask({
       createdAt: new Date().toISOString(),
     };
 
-    addToDo(newTask)
+    addToDo(localStorage.userId, newTask)
       .then(() => {
         setLoading(false);
         closeCreator();

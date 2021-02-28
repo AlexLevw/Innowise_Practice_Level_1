@@ -63,6 +63,7 @@ export function AuthProvider({ children }: IAuthProviderProps): JSX.Element {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user): void => {
       if (user) {
+        localStorage.setItem("userId", user.uid);
         setCurrentUser(user);
       }
       setLoading(false);

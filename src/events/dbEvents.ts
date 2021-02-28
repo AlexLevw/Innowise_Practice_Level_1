@@ -16,25 +16,27 @@ export interface INewToDo {
   createdAt: string;
 }
 
-const collection = "ToDos";
-
-export async function getToDosData(): Promise<
-  firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-> {
-  return db.collection(collection).orderBy("createdAt", "desc").get();
+export async function getToDosData(
+  userId: string
+): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+  return db.collection(userId).orderBy("createdAt", "desc").get();
 }
 
 export async function addToDo(
+  userId: string,
   newTask: INewToDo
 ): Promise<
   firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
 > {
-  return db.collection(collection).add(newTask);
+  return db.collection(userId).add(newTask);
 }
 
-export async function removeToDo(id: string): Promise<void> {
+export async function removeToDo(
+  userId: string,
+  taskId: string
+): Promise<void> {
   try {
-    const document = db.doc(`/ToDos/${id}`);
+    const document = db.doc(`/${userId}/${taskId}`);
     await document
       .get()
       .then((doc) => {
@@ -52,9 +54,9 @@ export async function removeToDo(id: string): Promise<void> {
   }
 }
 
-export async function editToDo(todo: IToDo): Promise<void> {
+export async function editToDo(userId: string, todo: IToDo): Promise<void> {
   try {
-    const document = db.collection(collection).doc(todo.todoId);
+    const document = db.collection(userId).doc(todo.todoId);
     document.update(todo);
   } catch {
     throw new Error("Error");
