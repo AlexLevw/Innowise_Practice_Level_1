@@ -1,6 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
 import firebase from "firebase";
 import { auth } from "../firebase";
+import { clearDB } from "../events/dbEvents";
+
+declare global {
+  interface Window {
+    userId: string;
+  }
+}
 
 interface IAuthContextValue {
   currentUser: firebase.User;
@@ -63,7 +70,8 @@ export function AuthProvider({ children }: IAuthProviderProps): JSX.Element {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user): void => {
       if (user) {
-        localStorage.setItem("userId", user.uid);
+        window.userId = user.uid;
+        clearDB();
         setCurrentUser(user);
       }
       setLoading(false);

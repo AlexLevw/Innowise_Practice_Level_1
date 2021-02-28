@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { format } from "date-fns";
 import styles from "./_ToDo.module.scss";
 import { getToDosData, editToDo, IToDo } from "../../events/dbEvents";
 import Header from "../Header/Header";
@@ -13,8 +12,8 @@ export default function ToDo(): JSX.Element {
   const [selectedTask, setSelectedTask] = useState<IToDo | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const getToDos = (): void => {
-    getToDosData(localStorage.userId).then((data) => {
+  const getToDos = (date: Date): void => {
+    getToDosData(date).then((data) => {
       const ToDos: IToDo[] = [];
       data.forEach((doc) => {
         ToDos.push({
@@ -38,12 +37,11 @@ export default function ToDo(): JSX.Element {
       todoId: todo.todoId,
       isComplete: !todo.isComplete,
     };
-    editToDo(localStorage.userId, newToDo as IToDo).then(() => getToDos());
+    editToDo(newToDo as IToDo).then(() => getToDos(selectedDate));
     e.target.readOnly = false;
   }
 
-  useEffect(() => getToDos(), []);
-
+  useEffect(() => getToDos(selectedDate), [selectedDate]);
   return (
     <div className={styles.container}>
       <Header page="todo" />
@@ -88,13 +86,14 @@ export default function ToDo(): JSX.Element {
       {creation && (
         <CreateTask
           closeCreator={() => setCreation(false)}
-          getToDos={getToDos}
+          getToDos={() => getToDos(selectedDate)}
+          selectedDate={selectedDate}
         />
       )}
       {selectedTask && (
         <Task
           closeTask={() => setSelectedTask(null)}
-          getToDos={getToDos}
+          getToDos={() => getToDos(selectedDate)}
           task={selectedTask}
         />
       )}

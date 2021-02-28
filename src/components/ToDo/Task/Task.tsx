@@ -50,7 +50,7 @@ export default function Task({
       body: bodyRef.current.value,
     };
 
-    editToDo(localStorage.userId, newToDo as IToDo)
+    editToDo(newToDo as IToDo)
       .then(() => {
         closeTask();
         getToDos();
@@ -62,7 +62,7 @@ export default function Task({
     setError("");
     setLoading(true);
 
-    removeToDo(localStorage.userId, task.todoId)
+    removeToDo(task.todoId)
       .then(() => {
         closeTask();
         getToDos();

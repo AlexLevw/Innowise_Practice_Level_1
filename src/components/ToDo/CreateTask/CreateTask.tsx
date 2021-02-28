@@ -5,11 +5,13 @@ import { addToDo, INewToDo } from "../../../events/dbEvents";
 interface ICreateTaskProps {
   closeCreator: CallableFunction;
   getToDos: CallableFunction;
+  selectedDate: Date;
 }
 
 export default function CreateTask({
   closeCreator,
   getToDos,
+  selectedDate,
 }: ICreateTaskProps): JSX.Element {
   const titleRef = useRef<HTMLInputElement>({} as HTMLInputElement);
   const bodyRef = useRef<HTMLTextAreaElement>({} as HTMLTextAreaElement);
@@ -31,10 +33,10 @@ export default function CreateTask({
       title: titleRef.current.value,
       body: bodyRef.current.value,
       isComplete: false,
-      createdAt: new Date().toISOString(),
+      createdAt: selectedDate.toISOString(),
     };
 
-    addToDo(localStorage.userId, newTask)
+    addToDo(newTask)
       .then(() => {
         setLoading(false);
         closeCreator();
