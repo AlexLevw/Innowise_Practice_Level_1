@@ -1,6 +1,18 @@
 .app {
-  max-width: 762px;
   width: 100%;
   height: 100%;
+  background-color: rgb(230, 230, 230);
+  display: flex;
+  justify-content: center;
+}
+
+:global(.dark).app {
+  background-color: #222;
+}
+
+.main {
+  max-width: 762px;
+  width: 100%;
+  height: 100vh;
   padding: 0 12px;
 }

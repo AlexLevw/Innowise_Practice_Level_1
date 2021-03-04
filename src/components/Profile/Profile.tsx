@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
+import { useAuth } from "@contexts/AuthContext";
 import styles from "./_Profile.module.scss";
-import { useAuth } from "../../contexts/AuthContext";
 import Header from "../Header/Header";
 
-export default function Profile(): JSX.Element {
+interface IProfileProps {
+  switchTheme: CallableFunction;
+}
+
+export default function Profile({ switchTheme }: IProfileProps): JSX.Element {
   const [error, setError] = useState<string>();
   const { currentUser, logout } = useAuth();
   const history = useHistory();
@@ -24,6 +28,13 @@ export default function Profile(): JSX.Element {
       {error && error}
       <div className={styles.main}>
         Profile: {currentUser.email}
+        <button
+          className={styles.themeSwitcher}
+          onClick={() => switchTheme()}
+          type="button"
+        >
+          Switch theme
+        </button>
         <Link className={styles.update} to="/update-profile">
           Update Profile
         </Link>

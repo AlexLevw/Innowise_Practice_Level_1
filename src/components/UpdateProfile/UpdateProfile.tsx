@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useAuth } from "@contexts/AuthContext";
 import styles from "./_UpdateProfile.module.scss";
-import { useAuth } from "../../contexts/AuthContext";
 
 export default function UpdateProfile(): JSX.Element {
   const emailRef = useRef<HTMLInputElement>(null);

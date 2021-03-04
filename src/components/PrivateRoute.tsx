@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 
 interface IPrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

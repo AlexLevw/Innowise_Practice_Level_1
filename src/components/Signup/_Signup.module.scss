@@ -37,6 +37,10 @@
   margin-top: 14px;
 }
 
+:global(.dark) .bottom{
+  color: white;
+}
+
 .loginLink {
   margin-left: 12px;
   color: #007ab8;

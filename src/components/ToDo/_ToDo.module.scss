@@ -1,7 +1,7 @@
 .container {
   width: 100%;
-  height: 100%;
-  display: flex;
+  height: 100vh;
+  display: flex;  
   flex-direction: column;
   justify-content: center;
 }
@@ -9,72 +9,27 @@
 .tasks {
   width: 100%;
   height: 100%;
+  position: relative; 
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 10px 0;
+  overflow: auto;
 }
 
 .tasksTitle {
   font-weight: 700;
   text-align: center;
+
+  :global(.dark) & {
+    color: white;
+  }
 }
 
 .tasksList {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 10px 0;
-}
-
-.task {
-  width: 100%;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  margin: 5px;
-  padding: 5px;
-  border-radius: 15px;
-  background-color: #fff;
-  transition: all .5s ease-out;
-
-  &:hover {
-    background-color: #ffeadd;
-  }
-}
-
-.taskCheckbox {
-  width: 20px;
-  height: 20px;
-  display: block;
-  position: relative;
-  cursor: pointer;
-  margin: 0 6px;
-
-  input {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
-    z-index: 1;
-    cursor: pointer;
-  }
-
-  span {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    border: 1px solid #e85d04;
-    border-radius: 10px;
-  }
-
-  input:checked ~ span {
-    background-color: #e85d04;
-  }
+  overflow: auto;
 }

@@ -35,6 +35,10 @@
 
 .bottom {
   margin-top: 14px;
+
+  :global(.dark) & {
+    color: white;
+  }
 }
 
 .loginLink {

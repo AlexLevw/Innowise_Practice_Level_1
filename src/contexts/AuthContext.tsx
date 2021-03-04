@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import firebase from "firebase";
+import { clearDB } from "@events/dbEvents";
 import { auth } from "../firebase";
-import { clearDB } from "../events/dbEvents";
 
 declare global {
   interface Window {
@@ -68,10 +68,10 @@ export function AuthProvider({ children }: IAuthProviderProps): JSX.Element {
   }
 
   useEffect(() => {
+    clearDB();
     const unsubscribe = auth.onAuthStateChanged((user): void => {
       if (user) {
         window.userId = user.uid;
-        clearDB();
         setCurrentUser(user);
       }
       setLoading(false);

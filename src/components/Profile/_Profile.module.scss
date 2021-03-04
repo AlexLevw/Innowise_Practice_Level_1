@@ -11,6 +11,26 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  :global(.dark) & {
+    color: #fff;
+  }
+}
+
+.themeSwitcher {
+  width: 120px;
+  height: 32px;
+  margin: 5px;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  background-color: #333;
+  font-size: 1em;
+
+  :global(.dark) & {
+    color: #333;
+    background-color: #E6E6E6;
+  }
 }
 
 .update {

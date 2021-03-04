@@ -1,16 +1,16 @@
 import React, { useRef, useState } from "react";
+import { addToDo, INewToDo, IToDo } from "@events/dbEvents";
 import styles from "./_CreateTask.module.scss";
-import { addToDo, INewToDo } from "../../../events/dbEvents";
 
 interface ICreateTaskProps {
   closeCreator: CallableFunction;
-  getToDos: CallableFunction;
+  addToDoLocal: (newToDo: IToDo) => void;
   selectedDate: Date;
 }
 
 export default function CreateTask({
   closeCreator,
-  getToDos,
+  addToDoLocal,
   selectedDate,
 }: ICreateTaskProps): JSX.Element {
   const titleRef = useRef<HTMLInputElement>({} as HTMLInputElement);
@@ -37,10 +37,10 @@ export default function CreateTask({
     };
 
     addToDo(newTask)
-      .then(() => {
+      .then((todo) => {
         setLoading(false);
+        addToDoLocal(todo);
         closeCreator();
-        getToDos();
       })
       .catch(() => {
         setLoading(false);

@@ -21,7 +21,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   width: 100vw;
   height: 100vh;
-  background-color: rgb(230, 230, 230);
 }
 
 #root {
@@ -118,11 +117,15 @@ code {
     height: 28px;
     width: 2px;
     background-color: #333;
+
+    .dark & {
+      background-color: #fff;
+    }
   }
   &:before {
     transform: rotate(45deg);
   }
   &:after {
     transform: rotate(-45deg);
-  }  
+  }
 }

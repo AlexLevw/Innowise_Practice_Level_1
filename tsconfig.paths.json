@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@contexts/*": ["./src/contexts/*"],
+      "@events/*": ["./src/events/*"]
+    }
+  }
+}

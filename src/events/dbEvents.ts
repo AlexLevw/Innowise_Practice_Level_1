@@ -1,4 +1,5 @@
-import firebase from "firebase";
+import { format, parse } from "date-fns";
+import firebase from "firebase/app";
 import { db } from "../firebase";
 
 export interface IToDo {
@@ -16,11 +17,17 @@ export interface INewToDo {
   createdAt: string;
 }
 
+export interface IDayStatuses {
+  haveCompleted: boolean;
+  haveUncompleted: boolean;
+  date: Date;
+}
+
 export async function clearDB(): Promise<void> {
-  const newDate = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
-  db.collection(window.userId)
-    .where("createdAt", "<", newDate)
-    .orderBy("createdAt", "desc")
+  const newDate = format(new Date(), "MM_dd_yyyy");
+  const userDays = db.collection("users").doc(window.userId).collection("days");
+  userDays
+    .where(firebase.firestore.FieldPath.documentId(), "<", newDate)
     .get()
     .then((querySnapshot) => {
       querySnapshot.docs.forEach((doc) => {
@@ -32,27 +39,58 @@ export async function clearDB(): Promise<void> {
 export async function getToDosData(
   date: Date
 ): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
-  const start = new Date(date.setHours(0, 0, 0, 0)).toISOString();
-  const end = new Date(date.setHours(23, 59, 59, 999)).toISOString();
-  return db
-    .collection(window.userId)
-    .where("createdAt", ">=", start)
-    .where("createdAt", "<=", end)
+  const newDate = format(new Date(date), "MM_dd_yyyy");
+  const userDays = db.collection("users").doc(window.userId).collection("days");
+  return userDays
+    .doc(newDate)
+    .collection("todos")
     .orderBy("createdAt", "desc")
     .get();
 }
 
-export async function addToDo(
-  newTask: INewToDo
-): Promise<
-  firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
-> {
-  return db.collection(window.userId).add(newTask);
+export async function getDaysStatuses(): Promise<IDayStatuses[]> {
+  const result: IDayStatuses[] = [];
+  const days = db.collection("users").doc(window.userId).collection("days");
+  await days.get().then((data) => {
+    data.forEach((doc) => {
+      result.push({
+        haveCompleted: doc.data().haveCompleted,
+        haveUncompleted: doc.data().haveUncompleted,
+        date: parse(doc.id, "MM_dd_yyyy", new Date()),
+      });
+    });
+  });
+  return result;
 }
 
-export async function removeToDo(taskId: string): Promise<void> {
+export async function addToDo(newTask: INewToDo): Promise<IToDo> {
+  const document = db
+    .collection("users")
+    .doc(window.userId)
+    .collection("days")
+    .doc(format(new Date(newTask.createdAt), "MM_dd_yyyy"));
+  await document.set({ haveUncompleted: true });
+  const todo: IToDo = {
+    ...newTask,
+    todoId: "",
+  };
+  await document
+    .collection("todos")
+    .add(newTask)
+    .then((doc) => {
+      todo.todoId = doc.id;
+    });
+  return todo;
+}
+
+export async function removeToDo(day: string, taskId: string): Promise<void> {
   try {
-    const document = db.doc(`/${window.userId}/${taskId}`);
+    const document = db.doc(
+      `/users/${window.userId}/days/${format(
+        new Date(day),
+        "MM_dd_yyyy"
+      )}/todos/${taskId}`
+    );
     await document
       .get()
       .then((doc) => {
@@ -70,10 +108,47 @@ export async function removeToDo(taskId: string): Promise<void> {
   }
 }
 
-export async function editToDo(todo: IToDo): Promise<void> {
+export async function editToDo(todo: IToDo, createdAt: string): Promise<void> {
   try {
-    const document = db.collection(window.userId).doc(todo.todoId);
+    const document = db.doc(
+      `/users/${window.userId}/days/${format(
+        new Date(createdAt),
+        "MM_dd_yyyy"
+      )}/todos/${todo.todoId}`
+    );
     document.update(todo);
+  } catch {
+    throw new Error("Error");
+  }
+}
+
+export async function changeToDoStatus(
+  date: string,
+  todoId: string,
+  isComplete: boolean
+): Promise<void> {
+  try {
+    const dayRef = db.doc(
+      `/users/${window.userId}/days/${format(new Date(date), "MM_dd_yyyy")}`
+    );
+    dayRef.collection("todos").doc(todoId).update({ isComplete });
+  } catch {
+    throw new Error("Error");
+  }
+}
+
+export async function changeDayStatuses(statuses: IDayStatuses): Promise<void> {
+  try {
+    const dayRef = db.doc(
+      `/users/${window.userId}/days/${format(
+        new Date(statuses.date),
+        "MM_dd_yyyy"
+      )}`
+    );
+    dayRef.update({
+      haveCompleted: statuses.haveCompleted,
+      haveUncompleted: statuses.haveUncompleted,
+    });
   } catch {
     throw new Error("Error");
   }

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import { useAuth } from "@contexts/AuthContext";
 import styles from "./_Login.module.scss";
-import { useAuth } from "../../contexts/AuthContext";
 
 export default function Login(): JSX.Element {
   const emailRef = useRef<HTMLInputElement>({} as HTMLInputElement);
