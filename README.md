@@ -2,6 +2,9 @@
 
 ## Task: [google docs](https://docs.google.com/document/d/1heFuihWrsw14bCpUdr6fla9ysqE6IrsobSMKAOpBiKA/edit).
 ---
+## [Demo](https://vitali-kruchkou.github.io/Innowise-Lab-Internship-Level-1-Clever-to-do-list/)
+
+---
 ## How to run the app:
 
 1. Clone this repository
@@ -16,19 +19,25 @@ $ cd Innowise_Practice_Level_1
 ```
 $ yarn
 ```
-4. Start app
+4. Add ```.env.local``` file with firebase keys to the root directory
+
+5. Start app
 ```
-yarn start      #Open http://localhost:3000 to view it in the browser.
+$ yarn start      #Open http://localhost:3000 to view it in the browser.
 ```
 ---
 ## Database snapshot
 The application uses firestore db.
 ### Structure:
 ```
-UserId-> ToDoId-> ├ title: `string`
-                  ├ body: `string`
-                  ├ isComplete: `boolean`
-                  └ createdAt: `string`
+users - UserId
+            ├haveCompleted:`boolean`
+            ├haveUncompleted:`boolean`
+            └ todos - ToDoId
+                          ├ title: `string`
+                          ├ body: `string`
+                          ├ isComplete: `boolean`
+                          └ createdAt: `string`
 ```
 ---
 ## Application stack
@@ -39,3 +48,4 @@ UserId-> ToDoId-> ├ title: `string`
 * node-sass
 * eslint + prettier
 * react-slick
+* craco-alias
