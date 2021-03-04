@@ -2,7 +2,7 @@
 
 ## Task: [google docs](https://docs.google.com/document/d/1heFuihWrsw14bCpUdr6fla9ysqE6IrsobSMKAOpBiKA/edit).
 ---
-## [Demo](https://vitali-kruchkou.github.io/Innowise-Lab-Internship-Level-1-Clever-to-do-list/)
+## [Demo](https://AlexLevw.github.io/Innowise_Practice_Level_1/)
 
 ---
 ## How to run the app:
