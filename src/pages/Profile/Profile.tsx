@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import Header from "@components/Header/Header";
 import styles from "./_Profile.module.scss";
-import Header from "../Header/Header";
 
 interface IProfileProps {
   switchTheme: CallableFunction;

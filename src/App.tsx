@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import { AuthProvider } from "@contexts/AuthContext";
+import Signup from "@pages/Signup/Signup";
+import Login from "@pages/Login/Login";
+import ToDo from "@pages/ToDo/ToDo";
+import Profile from "@pages/Profile/Profile";
+import ResetPassword from "@pages/ResetPassword/ResetPassword";
+import UpdateProfile from "@pages/UpdateProfile/UpdateProfile";
+import PrivateRoute from "@components/PrivateRoute";
 import styles from "./_App.module.scss";
-import Signup from "./Signup/Signup";
-import Login from "./Login/Login";
-import ToDo from "./ToDo/ToDo";
-import Profile from "./Profile/Profile";
-import ResetPassword from "./ResetPassword/ResetPassword";
-import UpdateProfile from "./UpdateProfile/UpdateProfile";
-import PrivateRoute from "./PrivateRoute";
 
 export default function App(): JSX.Element {
   const [theme, setTheme] = useState<string>(
