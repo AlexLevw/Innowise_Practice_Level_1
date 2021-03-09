@@ -7,12 +7,12 @@ import {
   IDayStatuses,
   getDaysStatuses,
 } from "@events/dbEvents";
-import Header from "@components/Header/Header";
-import styles from "./_ToDo.module.scss";
+import { Header } from "@components/index";
 import Calendar from "./Calendar/Calendar";
 import CreateTask from "./CreateTask/CreateTask";
 import EditTask from "./EditTask/EditTask";
 import Task from "./Task/Task";
+import styles from "./_ToDo.module.scss";
 
 export default function ToDo(): JSX.Element {
   const [toDos, setToDos] = useState<IToDo[]>([]);
@@ -26,7 +26,7 @@ export default function ToDo(): JSX.Element {
   function checkDayStatuses(
     todoId: string,
     todoIsComplete: boolean,
-    currentToDos = toDos
+    currentToDos: IToDo[] = toDos
   ) {
     const todayStatusesIndex = daysStatuses.findIndex(
       (elem) =>
@@ -35,50 +35,55 @@ export default function ToDo(): JSX.Element {
     );
     const todayStatuses = daysStatuses[todayStatusesIndex];
     if (todayStatuses) {
-      const newToDos = [...currentToDos];
+      const newToDos: IToDo[] = [...currentToDos];
       let haveCompleted = false;
       let haveUncompleted = false;
-      const todoIndex = newToDos.findIndex((elem) => elem.todoId === todoId);
+      const todoIndex: number = newToDos.findIndex(
+        (elem) => elem.todoId === todoId
+      );
       newToDos[todoIndex].isComplete = todoIsComplete;
       newToDos.forEach((elem) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        elem.isComplete ? (haveCompleted = true) : (haveUncompleted = true);
+        if (elem.isComplete) {
+          haveCompleted = true;
+        } else {
+          haveUncompleted = true;
+        }
       });
       if (
         todayStatuses.haveCompleted !== haveCompleted ||
         todayStatuses.haveUncompleted !== haveUncompleted
       ) {
-        const newDayStatuses = {
+        const newDayStatuses: IDayStatuses = {
           haveCompleted,
           haveUncompleted,
           date: todayStatuses.date,
         };
         changeDayStatuses(newDayStatuses);
-        const newDaysStatuses = [...daysStatuses];
+        const newDaysStatuses: IDayStatuses[] = [...daysStatuses];
         newDaysStatuses[todayStatusesIndex] = newDayStatuses;
         setDaysStatuses(newDaysStatuses);
       }
     } else {
-      const newDayStatuses = {
+      const newDayStatuses: IDayStatuses = {
         haveCompleted: false,
         haveUncompleted: true,
         date: selectedDate,
       };
       changeDayStatuses(newDayStatuses);
-      const newDaysStatuses = [...daysStatuses, newDayStatuses];
+      const newDaysStatuses: IDayStatuses[] = [...daysStatuses, newDayStatuses];
       setDaysStatuses(newDaysStatuses);
     }
   }
 
   const addToDoLocal = (newToDo: IToDo): void => {
-    const newToDos = [newToDo, ...toDos];
+    const newToDos: IToDo[] = [newToDo, ...toDos];
     setToDos(newToDos);
     checkDayStatuses(newToDo.todoId, newToDo.isComplete, newToDos);
   };
 
   const editToDoLocal = (task: IToDo): void => {
-    const newToDos = [...toDos];
-    const editedToDoIndex = newToDos.findIndex(
+    const newToDos: IToDo[] = [...toDos];
+    const editedToDoIndex: number = newToDos.findIndex(
       (elem) => elem.todoId === task.todoId
     );
     newToDos[editedToDoIndex] = task;
@@ -86,35 +91,38 @@ export default function ToDo(): JSX.Element {
   };
 
   const removeToDoLocal = (taskId: string): void => {
-    const newToDos = [...toDos];
-    const removedTaskIndex = newToDos.findIndex(
+    const newToDos: IToDo[] = [...toDos];
+    const removedTaskIndex: number = newToDos.findIndex(
       (elem) => elem.todoId === taskId
     );
     newToDos.splice(removedTaskIndex, 1);
     setToDos(newToDos);
-    const todayStatusesIndex = daysStatuses.findIndex(
+    const todayStatusesIndex: number = daysStatuses.findIndex(
       (elem) =>
         format(new Date(elem.date), "MM/dd/yyyy") ===
         format(selectedDate, "MM/dd/yyyy")
     );
-    const todayStatuses = daysStatuses[todayStatusesIndex];
+    const todayStatuses: IDayStatuses = daysStatuses[todayStatusesIndex];
     let haveCompleted = false;
     let haveUncompleted = false;
     newToDos.forEach((elem) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      elem.isComplete ? (haveCompleted = true) : (haveUncompleted = true);
+      if (elem.isComplete) {
+        haveCompleted = true;
+      } else {
+        haveUncompleted = true;
+      }
     });
     if (
       todayStatuses.haveCompleted !== haveCompleted ||
       todayStatuses.haveUncompleted !== haveUncompleted
     ) {
-      const newDayStatuses = {
+      const newDayStatuses: IDayStatuses = {
         haveCompleted,
         haveUncompleted,
         date: todayStatuses.date,
       };
       changeDayStatuses(newDayStatuses);
-      const newDaysStatuses = [...daysStatuses];
+      const newDaysStatuses: IDayStatuses[] = [...daysStatuses];
       newDaysStatuses[todayStatusesIndex] = newDayStatuses;
       setDaysStatuses(newDaysStatuses);
     }
@@ -144,10 +152,10 @@ export default function ToDo(): JSX.Element {
 
   return (
     <div className={styles.container}>
-      <Header page="todo" />
+      <Header />
       <Calendar
         selectedDate={selectedDate}
-        setSelectedDate={(date: Date) => setSelectedDate(date)}
+        setSelectedDate={setSelectedDate}
         daysStatuses={daysStatuses}
       />
       <div className={styles.tasks}>
@@ -165,8 +173,7 @@ export default function ToDo(): JSX.Element {
           })}
         </div>
         <button
-          className="c-btn-orange"
-          style={{ width: "100%" }}
+          className={`${styles.createTaskBtn} c-btn-orange`}
           type="button"
           onClick={() => setCreation(true)}
         >

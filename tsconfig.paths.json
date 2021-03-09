@@ -5,6 +5,7 @@
       "@src/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@pages/*": ["./src/pages/*"],
+      "@constants/*": ["./src/constants/*"],
       "@assets/*": ["./src/assets/*"],
       "@contexts/*": ["./src/contexts/*"],
       "@events/*": ["./src/events/*"]

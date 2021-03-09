@@ -46,7 +46,7 @@ export default function Task({
     e.preventDefault();
     setLoading(true);
 
-    const newToDo = {
+    const newToDo: IToDo = {
       todoId: task.todoId,
       title: titleRef.current.value,
       body: bodyRef.current.value,
@@ -62,7 +62,7 @@ export default function Task({
       .catch(() => setLoading(false));
   };
 
-  const removeTask = () => {
+  const removeTask = (): void => {
     setError("");
     setLoading(true);
 
@@ -108,8 +108,7 @@ export default function Task({
         />
         <div className={styles.bottom}>
           <button
-            className="c-btn-blue"
-            style={{ width: "68px" }}
+            className={`${styles.saveBtn} c-btn-blue`}
             type="submit"
             disabled={!taskChanged || loading}
           >

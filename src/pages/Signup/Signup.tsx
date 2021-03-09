@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { HOME_ROUTE, LOGIN_ROUTE } from "@constants/routes";
 import styles from "./_Signup.module.scss";
 
 export default function Signup(): JSX.Element {
@@ -14,14 +15,17 @@ export default function Signup(): JSX.Element {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const email: string = emailRef.current.value;
+    const password: string = passwordRef.current.value;
+    const passwordConfirm: string = passwordConfirmRef.current.value;
 
-    if (passwordRef.current.value === passwordConfirmRef.current.value) {
+    if (password === passwordConfirm) {
       try {
         setError("");
         setLoading(true);
-        await signup(emailRef.current.value, passwordRef.current.value);
+        await signup(email, password);
         setLoading(false);
-        history.push("/");
+        history.push(HOME_ROUTE);
       } catch {
         setError("Failed to create an account");
       }
@@ -74,7 +78,7 @@ export default function Signup(): JSX.Element {
       </div>
       <div className={styles.bottom}>
         Already have an account?
-        <Link className={styles.loginLink} to="/login">
+        <Link className={styles.loginLink} to={LOGIN_ROUTE}>
           Log In
         </Link>
       </div>

@@ -43,29 +43,20 @@ export function AuthProvider({ children }: IAuthProviderProps): JSX.Element {
   );
   const [loading, setLoading] = useState<boolean>(true);
 
-  function signup(email: string, password: string) {
-    return auth.createUserWithEmailAndPassword(email, password);
-  }
+  const signup = (email: string, password: string) =>
+    auth.createUserWithEmailAndPassword(email, password);
 
-  function login(email: string, password: string) {
-    return auth.signInWithEmailAndPassword(email, password);
-  }
+  const login = (email: string, password: string) =>
+    auth.signInWithEmailAndPassword(email, password);
 
-  function logout() {
-    return auth.signOut();
-  }
+  const logout = () => auth.signOut();
 
-  function resetPassword(email: string) {
-    return auth.sendPasswordResetEmail(email);
-  }
+  const resetPassword = (email: string) => auth.sendPasswordResetEmail(email);
 
-  function updateEmail(email: string) {
-    return currentUser.updateEmail(email);
-  }
+  const updateEmail = (email: string) => currentUser.updateEmail(email);
 
-  function updatePassword(password: string) {
-    return currentUser.updatePassword(password);
-  }
+  const updatePassword = (password: string) =>
+    currentUser.updatePassword(password);
 
   useEffect(() => {
     clearDB();

@@ -19,7 +19,7 @@ export default function Day({
   return (
     <>
       <button
-        className={`${styles.calendarDay} ${isSelected ? "active" : ""}`}
+        className={styles.calendarDay + (isSelected ? " active" : "")}
         type="button"
         onClick={() => setSelectedDate(currentDate)}
         disabled={isSelected}

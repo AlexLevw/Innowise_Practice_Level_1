@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
-import Header from "@components/Header/Header";
+import { Header } from "@components/index";
+import { UPDATE_PROFILE_ROUTE, LOGIN_ROUTE } from "@constants/routes";
 import styles from "./_Profile.module.scss";
 
 interface IProfileProps {
@@ -16,7 +17,7 @@ export default function Profile({ switchTheme }: IProfileProps): JSX.Element {
   async function handleLogout(): Promise<void> {
     try {
       await logout();
-      history.push("./login");
+      history.push(LOGIN_ROUTE);
     } catch {
       setError("Failed to log out");
     }
@@ -24,7 +25,7 @@ export default function Profile({ switchTheme }: IProfileProps): JSX.Element {
 
   return (
     <div className={styles.container}>
-      <Header page="profile" />
+      <Header />
       {error && error}
       <div className={styles.main}>
         Profile: {currentUser.email}
@@ -35,7 +36,7 @@ export default function Profile({ switchTheme }: IProfileProps): JSX.Element {
         >
           Switch theme
         </button>
-        <Link className={styles.update} to="/update-profile">
+        <Link className={styles.update} to={UPDATE_PROFILE_ROUTE}>
           Update Profile
         </Link>
         <button

@@ -1,13 +1,23 @@
 import React, { useState } from "react";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import { AuthProvider } from "@contexts/AuthContext";
-import Signup from "@pages/Signup/Signup";
-import Login from "@pages/Login/Login";
-import ToDo from "@pages/ToDo/ToDo";
-import Profile from "@pages/Profile/Profile";
-import ResetPassword from "@pages/ResetPassword/ResetPassword";
-import UpdateProfile from "@pages/UpdateProfile/UpdateProfile";
-import PrivateRoute from "@components/PrivateRoute";
+import {
+  Signup,
+  Login,
+  ToDo,
+  Profile,
+  ResetPassword,
+  UpdateProfile,
+} from "@pages/index";
+import { PrivateRoute } from "@components/index";
+import {
+  HOME_ROUTE,
+  PROFILE_ROUTE,
+  UPDATE_PROFILE_ROUTE,
+  LOGIN_ROUTE,
+  REGISTER_ROUTE,
+  RESET_PASSWORD_ROUTE,
+} from "@constants/routes";
 import styles from "./_App.module.scss";
 
 export default function App(): JSX.Element {
@@ -16,7 +26,7 @@ export default function App(): JSX.Element {
   );
 
   const switchTheme = (): void => {
-    const newTheme = theme === "light" ? "dark" : "light";
+    const newTheme: string = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.theme = newTheme;
   };
@@ -27,15 +37,18 @@ export default function App(): JSX.Element {
         <Router>
           <AuthProvider>
             <Switch>
-              <PrivateRoute exact path="/" component={ToDo} />
+              <PrivateRoute exact path={HOME_ROUTE} component={ToDo} />
               <PrivateRoute
-                path="/profile"
+                path={PROFILE_ROUTE}
                 component={() => <Profile switchTheme={switchTheme} />}
               />
-              <PrivateRoute path="/update-profile" component={UpdateProfile} />
-              <Route path="/login" component={Login} />
-              <Route path="/register" component={Signup} />
-              <Route path="/reset-password" component={ResetPassword} />
+              <PrivateRoute
+                path={UPDATE_PROFILE_ROUTE}
+                component={UpdateProfile}
+              />
+              <Route path={LOGIN_ROUTE} component={Login} />
+              <Route path={REGISTER_ROUTE} component={Signup} />
+              <Route path={RESET_PASSWORD_ROUTE} component={ResetPassword} />
             </Switch>
           </AuthProvider>
         </Router>

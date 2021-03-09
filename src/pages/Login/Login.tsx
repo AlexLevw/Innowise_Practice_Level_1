@@ -1,6 +1,11 @@
 import React, { useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import {
+  HOME_ROUTE,
+  REGISTER_ROUTE,
+  RESET_PASSWORD_ROUTE,
+} from "@constants/routes";
 import styles from "./_Login.module.scss";
 
 export default function Login(): JSX.Element {
@@ -19,7 +24,7 @@ export default function Login(): JSX.Element {
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
       setLoading(false);
-      history.push("/");
+      history.push(HOME_ROUTE);
     } catch {
       setLoading(false);
       setError("Failed to sign in");
@@ -55,12 +60,12 @@ export default function Login(): JSX.Element {
           <button disabled={loading} className="c-btn-blue" type="submit">
             Log In
           </button>
-          <Link to="/reset-password">Forgot password?</Link>
+          <Link to={RESET_PASSWORD_ROUTE}>Forgot password?</Link>
         </form>
       </div>
       <div className={styles.bottom}>
         Need an account?
-        <Link className={styles.loginLink} to="/register">
+        <Link className={styles.loginLink} to={REGISTER_ROUTE}>
           Sign Up
         </Link>
       </div>

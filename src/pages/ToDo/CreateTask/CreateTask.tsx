@@ -78,18 +78,9 @@ export default function CreateTask({
               required
             />
           </label>
-          <label
-            className="c-input"
-            style={{ height: "100%" }}
-            htmlFor="task-body"
-          >
+          <label className={`c-input ${styles.body}`} htmlFor="task-body">
             Details:
-            <textarea
-              ref={bodyRef}
-              id="task-body"
-              style={{ height: "100%" }}
-              name="task-body"
-            />
+            <textarea ref={bodyRef} id="task-body" name="task-body" />
           </label>
           <button disabled={loading} className="c-btn-blue" type="submit">
             Create

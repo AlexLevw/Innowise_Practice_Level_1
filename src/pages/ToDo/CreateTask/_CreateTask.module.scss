@@ -43,6 +43,13 @@
   justify-content: space-between;
   align-items: center;
 
+  .body {
+    height: 100%;
+    textarea {
+      height: 100%;
+    }
+  }
+
   :global(.dark) & {
     textarea, input {
       color: rgb(220, 220, 220);

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { LOGIN_ROUTE, REGISTER_ROUTE } from "@constants/routes";
 import styles from "./_ResetPassword.module.scss";
 
 export default function ResetPassword(): JSX.Element {
@@ -45,12 +46,12 @@ export default function ResetPassword(): JSX.Element {
           <button disabled={loading} className="c-btn-blue" type="submit">
             Send
           </button>
-          <Link to="/login">Log In</Link>
+          <Link to={LOGIN_ROUTE}>Log In</Link>
         </form>
       </div>
       <div className={styles.bottom}>
         Need an account?
-        <Link className={styles.loginLink} to="/register">
+        <Link className={styles.loginLink} to={REGISTER_ROUTE}>
           Sign Up
         </Link>
       </div>

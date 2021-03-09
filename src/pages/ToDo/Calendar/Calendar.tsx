@@ -34,15 +34,15 @@ export default function Calendar({
   ];
 
   function createCalendar(): JSX.Element[] {
-    const newDate = new Date();
-    const daysLeft = endOfMonth(newDate).getDate() - newDate.getDate();
+    const newDate: Date = new Date();
+    const daysLeft: number = endOfMonth(newDate).getDate() - newDate.getDate();
     const result: JSX.Element[] = [];
     for (let i = 0; i <= daysLeft; i += 1) {
-      const currentDate = addDays(newDate, i);
-      const isSelected =
+      const currentDate: Date = addDays(newDate, i);
+      const isSelected: boolean =
         format(selectedDate, "MM/dd/yyyy") ===
         format(currentDate, "MM/dd/yyyy");
-      const currentStatuses = daysStatuses.find(
+      const currentStatuses: IDayStatuses | undefined = daysStatuses.find(
         (elem) =>
           format(new Date(elem.date), "MM/dd/yyyy") ===
           format(currentDate, "MM/dd/yyyy")
