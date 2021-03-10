@@ -1,26 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { memo } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { HOME_ROUTE, PROFILE_ROUTE } from "@constants/routes";
 import styles from "./_Header.module.scss";
 
-interface IHeader {
-  page: string;
-}
+function HeaderInner(): JSX.Element {
+  const history = useHistory();
+  const activePage =
+    history.location.pathname === PROFILE_ROUTE ? "profile" : "todo";
 
-export default function Header({ page }: IHeader): JSX.Element {
   return (
     <div className={styles.header}>
       <Link
-        className={`${styles.link} ${page === "todo" ? styles.active : ""}`}
-        to="/"
+        className={`${styles.link} ${
+          activePage === "todo" ? styles.active : ""
+        }`}
+        to={HOME_ROUTE}
       >
         To-Do
       </Link>
       <Link
-        className={`${styles.link} ${page === "profile" ? styles.active : ""}`}
-        to="/profile"
+        className={`${styles.link} ${
+          activePage === "profile" ? styles.active : ""
+        }`}
+        to={PROFILE_ROUTE}
       >
         Profile
       </Link>
     </div>
   );
 }
+
+const Header = memo(HeaderInner);
+
+export default Header;

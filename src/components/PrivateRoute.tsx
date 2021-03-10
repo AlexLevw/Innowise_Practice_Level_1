@@ -1,27 +1,24 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import { useAuth } from "@contexts/AuthContext";
+import { useAuth } from "@contexts/index";
+import { LOGIN_ROUTE } from "@constants/routes";
 
 interface IPrivateRouteProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  component: (props: any) => JSX.Element;
+  component: () => JSX.Element;
+  path: string;
 }
 
 export default function PrivateRoute({
   component: Component,
-  ...rest
+  path,
 }: IPrivateRouteProps & RouteProps): JSX.Element {
   const { currentUser } = useAuth();
+
   return (
     <Route
-      {...rest}
-      render={(props): React.ReactNode => {
-        return currentUser.uid ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/login" />
-        );
+      path={path}
+      render={(): React.ReactNode => {
+        return currentUser.uid ? <Component /> : <Redirect to={LOGIN_ROUTE} />;
       }}
     />
   );

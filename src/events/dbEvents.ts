@@ -40,17 +40,13 @@ export async function getToDosData(
   date: Date
 ): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
   const newDate = format(new Date(date), "MM_dd_yyyy");
-  const userDays = db.collection("users").doc(window.userId).collection("days");
-  return userDays
-    .doc(newDate)
-    .collection("todos")
-    .orderBy("createdAt", "desc")
-    .get();
+  const dateRef = db.doc(`/users/${window.userId}/days/${newDate}/`);
+  return dateRef.collection("todos").orderBy("createdAt", "desc").get();
 }
 
 export async function getDaysStatuses(): Promise<IDayStatuses[]> {
   const result: IDayStatuses[] = [];
-  const days = db.collection("users").doc(window.userId).collection("days");
+  const days = db.collection(`/users/${window.userId}/days/`);
   await days.get().then((data) => {
     data.forEach((doc) => {
       result.push({
@@ -64,17 +60,14 @@ export async function getDaysStatuses(): Promise<IDayStatuses[]> {
 }
 
 export async function addToDo(newTask: INewToDo): Promise<IToDo> {
-  const document = db
-    .collection("users")
-    .doc(window.userId)
-    .collection("days")
-    .doc(format(new Date(newTask.createdAt), "MM_dd_yyyy"));
-  await document.set({ haveUncompleted: true });
+  const taskDate = format(new Date(newTask.createdAt), "MM_dd_yyyy");
+  const dayRef = db.doc(`/users/${window.userId}/days/${taskDate}/`);
+  await dayRef.set({ haveUncompleted: true });
   const todo: IToDo = {
     ...newTask,
     todoId: "",
   };
-  await document
+  await dayRef
     .collection("todos")
     .add(newTask)
     .then((doc) => {
@@ -84,20 +77,18 @@ export async function addToDo(newTask: INewToDo): Promise<IToDo> {
 }
 
 export async function removeToDo(day: string, taskId: string): Promise<void> {
+  const formattingDay = format(new Date(day), "MM_dd_yyyy");
   try {
-    const document = db.doc(
-      `/users/${window.userId}/days/${format(
-        new Date(day),
-        "MM_dd_yyyy"
-      )}/todos/${taskId}`
+    const taskRef = db.doc(
+      `/users/${window.userId}/days/${formattingDay}/todos/${taskId}`
     );
-    await document
+    await taskRef
       .get()
       .then((doc) => {
         if (!doc.exists) {
           throw new Error("Todo not found!");
         }
-        document.delete();
+        taskRef.delete();
         return 1;
       })
       .catch(() => {
@@ -109,14 +100,12 @@ export async function removeToDo(day: string, taskId: string): Promise<void> {
 }
 
 export async function editToDo(todo: IToDo, createdAt: string): Promise<void> {
+  const taskDate = format(new Date(createdAt), "MM_dd_yyyy");
   try {
-    const document = db.doc(
-      `/users/${window.userId}/days/${format(
-        new Date(createdAt),
-        "MM_dd_yyyy"
-      )}/todos/${todo.todoId}`
+    const taskRef = db.doc(
+      `/users/${window.userId}/days/${taskDate}/todos/${todo.todoId}`
     );
-    document.update(todo);
+    taskRef.update(todo);
   } catch {
     throw new Error("Error");
   }
@@ -128,10 +117,11 @@ export async function changeToDoStatus(
   isComplete: boolean
 ): Promise<void> {
   try {
-    const dayRef = db.doc(
-      `/users/${window.userId}/days/${format(new Date(date), "MM_dd_yyyy")}`
+    const formattingDate = format(new Date(date), "MM_dd_yyyy");
+    const taskRef = db.doc(
+      `/users/${window.userId}/days/${formattingDate}/todos/${todoId}/`
     );
-    dayRef.collection("todos").doc(todoId).update({ isComplete });
+    taskRef.update({ isComplete });
   } catch {
     throw new Error("Error");
   }
@@ -139,12 +129,8 @@ export async function changeToDoStatus(
 
 export async function changeDayStatuses(statuses: IDayStatuses): Promise<void> {
   try {
-    const dayRef = db.doc(
-      `/users/${window.userId}/days/${format(
-        new Date(statuses.date),
-        "MM_dd_yyyy"
-      )}`
-    );
+    const formattingDate = format(new Date(statuses.date), "MM_dd_yyyy");
+    const dayRef = db.doc(`/users/${window.userId}/days/${formattingDate}`);
     dayRef.update({
       haveCompleted: statuses.haveCompleted,
       haveUncompleted: statuses.haveUncompleted,

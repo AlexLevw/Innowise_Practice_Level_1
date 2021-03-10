@@ -1,12 +1,13 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "@contexts/AuthContext";
+import { useAuth } from "@contexts/index";
+import { PROFILE_ROUTE } from "@constants/routes";
 import styles from "./_UpdateProfile.module.scss";
 
 export default function UpdateProfile(): JSX.Element {
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>({} as HTMLInputElement);
+  const passwordRef = useRef<HTMLInputElement>({} as HTMLInputElement);
+  const passwordConfirmRef = useRef<HTMLInputElement>({} as HTMLInputElement);
   const { currentUser, updateEmail, updatePassword } = useAuth();
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -14,32 +15,34 @@ export default function UpdateProfile(): JSX.Element {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (emailRef.current && passwordRef.current && confirmPasswordRef.current) {
-      if (passwordRef.current.value === confirmPasswordRef.current.value) {
-        setLoading(true);
-        setError("");
+    const email: string = emailRef.current.value;
+    const password: string = passwordRef.current.value;
+    const passwordConfirm: string = passwordConfirmRef.current.value;
 
-        const promises = [];
-        if (emailRef.current.value !== currentUser.email) {
-          promises.push(updateEmail(emailRef.current.value));
-        }
-        if (passwordRef.current.value) {
-          promises.push(updatePassword(passwordRef.current.value));
-        }
+    if (password === passwordConfirm) {
+      setLoading(true);
+      setError("");
 
-        Promise.all(promises)
-          .then(() => {
-            history.push("/profile");
-          })
-          .catch(() => {
-            setError("Failed to update profile");
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      } else {
-        setError("Password do not match");
+      const promises = [];
+      if (email !== currentUser.email) {
+        promises.push(updateEmail(email));
       }
+      if (password) {
+        promises.push(updatePassword(password));
+      }
+
+      Promise.all(promises)
+        .then(() => {
+          history.push(PROFILE_ROUTE);
+        })
+        .catch(() => {
+          setError("Failed to update profile");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setError("Password do not match");
     }
   }
 
@@ -76,7 +79,7 @@ export default function UpdateProfile(): JSX.Element {
               id="confirm-password"
               name="confirm-password"
               type="password"
-              ref={confirmPasswordRef}
+              ref={passwordConfirmRef}
               placeholder="Leave blank to keep the same"
             />
           </label>

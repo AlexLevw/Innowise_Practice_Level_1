@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { format } from "date-fns";
 import { IDayStatuses } from "@events/dbEvents";
 import styles from "./_Day.module.scss";
@@ -10,7 +10,7 @@ interface IDayProps {
   dayStatuses: IDayStatuses | undefined;
 }
 
-export default function Day({
+function DayInner({
   isSelected,
   currentDate,
   setSelectedDate,
@@ -19,7 +19,7 @@ export default function Day({
   return (
     <>
       <button
-        className={`${styles.calendarDay} ${isSelected ? "active" : ""}`}
+        className={styles.calendarDay + (isSelected ? " active" : "")}
         type="button"
         onClick={() => setSelectedDate(currentDate)}
         disabled={isSelected}
@@ -40,3 +40,7 @@ export default function Day({
     </>
   );
 }
+
+const Day = memo(DayInner);
+
+export default Day;

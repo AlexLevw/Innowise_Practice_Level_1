@@ -1,36 +1,37 @@
 import React, { useRef, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { useAuth } from "@contexts/AuthContext";
-import styles from "./_Login.module.scss";
+import { Link } from "react-router-dom";
+import { useAuth } from "@contexts/index";
+import { LOGIN_ROUTE, REGISTER_ROUTE } from "@constants/routes";
+import styles from "./_ResetPassword.module.scss";
 
-export default function Login(): JSX.Element {
+export default function ResetPassword(): JSX.Element {
   const emailRef = useRef<HTMLInputElement>({} as HTMLInputElement);
-  const passwordRef = useRef<HTMLInputElement>({} as HTMLInputElement);
-  const { login } = useAuth();
+  const { resetPassword } = useAuth();
   const [error, setError] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const history = useHistory();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     try {
+      setMessage("");
       setError("");
       setLoading(true);
-      await login(emailRef.current.value, passwordRef.current.value);
-      setLoading(false);
-      history.push("/");
+      await resetPassword(emailRef.current.value);
+      setMessage("Check your inbox for further instructions");
     } catch {
-      setLoading(false);
-      setError("Failed to sign in");
+      setError("Failed to reset password");
     }
+    setLoading(false);
   }
 
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h2 className={styles.cardTitle}>Log In</h2>
+        <h2 className={styles.cardTitle}>Reset Password</h2>
         {error}
+        {message}
         <form className={styles.cardForm} onSubmit={handleSubmit}>
           <label className="c-input" htmlFor="email">
             <p>Email:</p>
@@ -42,25 +43,15 @@ export default function Login(): JSX.Element {
               required
             />
           </label>
-          <label className="c-input" htmlFor="password">
-            <p>Password:</p>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              ref={passwordRef}
-              required
-            />
-          </label>
           <button disabled={loading} className="c-btn-blue" type="submit">
-            Log In
+            Send
           </button>
-          <Link to="/reset-password">Forgot password?</Link>
+          <Link to={LOGIN_ROUTE}>Log In</Link>
         </form>
       </div>
       <div className={styles.bottom}>
         Need an account?
-        <Link className={styles.loginLink} to="/register">
+        <Link className={styles.loginLink} to={REGISTER_ROUTE}>
           Sign Up
         </Link>
       </div>

@@ -1,22 +1,22 @@
-import React, { useRef, useState } from "react";
-import { addToDo, INewToDo, IToDo } from "@events/dbEvents";
+import React, { useRef, useState, useContext } from "react";
+import { addToDo, INewToDo } from "@events/dbEvents";
+import { ToDoContext } from "@contexts/index";
 import styles from "./_CreateTask.module.scss";
 
 interface ICreateTaskProps {
   closeCreator: CallableFunction;
-  addToDoLocal: (newToDo: IToDo) => void;
   selectedDate: Date;
 }
 
 export default function CreateTask({
   closeCreator,
-  addToDoLocal,
   selectedDate,
 }: ICreateTaskProps): JSX.Element {
   const titleRef = useRef<HTMLInputElement>({} as HTMLInputElement);
   const bodyRef = useRef<HTMLTextAreaElement>({} as HTMLTextAreaElement);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const { addToDoLocal } = useContext(ToDoContext);
 
   const handleClickOutside = (e: React.MouseEvent): void => {
     if ((e.target as HTMLDivElement).className === styles.container) {
@@ -78,18 +78,9 @@ export default function CreateTask({
               required
             />
           </label>
-          <label
-            className="c-input"
-            style={{ height: "100%" }}
-            htmlFor="task-body"
-          >
+          <label className={`c-input ${styles.body}`} htmlFor="task-body">
             Details:
-            <textarea
-              ref={bodyRef}
-              id="task-body"
-              style={{ height: "100%" }}
-              name="task-body"
-            />
+            <textarea ref={bodyRef} id="task-body" name="task-body" />
           </label>
           <button disabled={loading} className="c-btn-blue" type="submit">
             Create
