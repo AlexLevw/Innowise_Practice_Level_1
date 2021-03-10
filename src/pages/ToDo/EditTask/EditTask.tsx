@@ -1,28 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { format } from "date-fns";
 import trashIcon from "@assets/icons/trash.svg";
 import { removeToDo, editToDo, IToDo } from "@events/dbEvents";
+import { ToDoContext } from "@contexts/index";
 import styles from "./_EditTask.module.scss";
 
 interface ITaskProps {
   closeTask: CallableFunction;
-  editToDoLocal: (task: IToDo) => void;
-  removeToDoLocal: (taskId: string) => void;
   task: IToDo;
 }
 
-export default function Task({
-  closeTask,
-  editToDoLocal,
-  removeToDoLocal,
-  task,
-}: ITaskProps): JSX.Element {
+export default function Task({ closeTask, task }: ITaskProps): JSX.Element {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [taskChanged, setTaskChanged] = useState<boolean>(false);
 
   const titleRef = useRef<HTMLInputElement>({} as HTMLInputElement);
   const bodyRef = useRef<HTMLTextAreaElement>({} as HTMLTextAreaElement);
+
+  const { editToDoLocal, removeToDoLocal } = useContext(ToDoContext);
 
   const handleClickOutside = (e: React.MouseEvent): void => {
     if ((e.target as HTMLDivElement).className === styles.container) {
@@ -77,6 +73,8 @@ export default function Task({
       });
   };
 
+  const closeWindow = (): void => closeTask();
+
   return (
     <div
       className={styles.container}
@@ -87,7 +85,7 @@ export default function Task({
         {error && error}
         <button
           className="c-closeCross"
-          onClick={() => closeTask()}
+          onClick={closeWindow}
           type="button"
           aria-label="Close"
         />

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
-import { useAuth } from "@contexts/AuthContext";
+import { useAuth } from "@contexts/index";
 import { Header } from "@components/index";
 import { UPDATE_PROFILE_ROUTE, LOGIN_ROUTE } from "@constants/routes";
 import styles from "./_Profile.module.scss";

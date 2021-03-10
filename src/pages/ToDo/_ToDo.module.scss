@@ -16,6 +16,10 @@
   justify-content: space-between;
   padding: 10px 0;
   overflow: auto;
+  
+  .createTaskBtn {
+    width: 100%;
+  }
 }
 
 .tasksTitle {
@@ -32,8 +36,4 @@
   height: 100%;
   padding: 10px 0;
   overflow: auto;
-}
-
-.createTaskBtn {
-  width: 100%;
 }

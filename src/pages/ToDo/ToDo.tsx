@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { format } from "date-fns";
 import {
   getToDosData,
@@ -8,6 +8,7 @@ import {
   getDaysStatuses,
 } from "@events/dbEvents";
 import { Header } from "@components/index";
+import { ToDoContext } from "@contexts/index";
 import Calendar from "./Calendar/Calendar";
 import CreateTask from "./CreateTask/CreateTask";
 import EditTask from "./EditTask/EditTask";
@@ -23,63 +24,72 @@ export default function ToDo(): JSX.Element {
     [] as IDayStatuses[]
   );
 
-  function checkDayStatuses(
-    todoId: string,
-    todoIsComplete: boolean,
-    currentToDos: IToDo[] = toDos
-  ) {
-    const todayStatusesIndex = daysStatuses.findIndex(
-      (elem) =>
-        format(new Date(elem.date), "MM/dd/yyyy") ===
-        format(selectedDate, "MM/dd/yyyy")
-    );
-    const todayStatuses = daysStatuses[todayStatusesIndex];
-    if (todayStatuses) {
-      const newToDos: IToDo[] = [...currentToDos];
-      let haveCompleted = false;
-      let haveUncompleted = false;
-      const todoIndex: number = newToDos.findIndex(
-        (elem) => elem.todoId === todoId
+  const checkDayStatuses = useCallback(
+    (
+      todoId: string,
+      todoIsComplete: boolean,
+      currentToDos: IToDo[] = toDos
+    ) => {
+      const todayStatusesIndex = daysStatuses.findIndex(
+        (elem) =>
+          format(new Date(elem.date), "MM/dd/yyyy") ===
+          format(selectedDate, "MM/dd/yyyy")
       );
-      newToDos[todoIndex].isComplete = todoIsComplete;
-      newToDos.forEach((elem) => {
-        if (elem.isComplete) {
-          haveCompleted = true;
-        } else {
-          haveUncompleted = true;
+      const todayStatuses = daysStatuses[todayStatusesIndex];
+      if (todayStatuses) {
+        const newToDos: IToDo[] = [...currentToDos];
+        let haveCompleted = false;
+        let haveUncompleted = false;
+        const todoIndex: number = newToDos.findIndex(
+          (elem) => elem.todoId === todoId
+        );
+        newToDos[todoIndex].isComplete = todoIsComplete;
+        newToDos.forEach((elem) => {
+          if (elem.isComplete) {
+            haveCompleted = true;
+          } else {
+            haveUncompleted = true;
+          }
+        });
+        if (
+          todayStatuses.haveCompleted !== haveCompleted ||
+          todayStatuses.haveUncompleted !== haveUncompleted
+        ) {
+          const newDayStatuses: IDayStatuses = {
+            haveCompleted,
+            haveUncompleted,
+            date: todayStatuses.date,
+          };
+          changeDayStatuses(newDayStatuses);
+          const newDaysStatuses: IDayStatuses[] = [...daysStatuses];
+          newDaysStatuses[todayStatusesIndex] = newDayStatuses;
+          setDaysStatuses(newDaysStatuses);
         }
-      });
-      if (
-        todayStatuses.haveCompleted !== haveCompleted ||
-        todayStatuses.haveUncompleted !== haveUncompleted
-      ) {
+      } else {
         const newDayStatuses: IDayStatuses = {
-          haveCompleted,
-          haveUncompleted,
-          date: todayStatuses.date,
+          haveCompleted: false,
+          haveUncompleted: true,
+          date: selectedDate,
         };
         changeDayStatuses(newDayStatuses);
-        const newDaysStatuses: IDayStatuses[] = [...daysStatuses];
-        newDaysStatuses[todayStatusesIndex] = newDayStatuses;
+        const newDaysStatuses: IDayStatuses[] = [
+          ...daysStatuses,
+          newDayStatuses,
+        ];
         setDaysStatuses(newDaysStatuses);
       }
-    } else {
-      const newDayStatuses: IDayStatuses = {
-        haveCompleted: false,
-        haveUncompleted: true,
-        date: selectedDate,
-      };
-      changeDayStatuses(newDayStatuses);
-      const newDaysStatuses: IDayStatuses[] = [...daysStatuses, newDayStatuses];
-      setDaysStatuses(newDaysStatuses);
-    }
-  }
+    },
+    [daysStatuses, selectedDate, toDos]
+  );
 
-  const addToDoLocal = (newToDo: IToDo): void => {
-    const newToDos: IToDo[] = [newToDo, ...toDos];
-    setToDos(newToDos);
-    checkDayStatuses(newToDo.todoId, newToDo.isComplete, newToDos);
-  };
+  const addToDoLocal = useCallback(
+    (newToDo: IToDo): void => {
+      const newToDos: IToDo[] = [newToDo, ...toDos];
+      setToDos(newToDos);
+      checkDayStatuses(newToDo.todoId, newToDo.isComplete, newToDos);
+    },
+    [checkDayStatuses, toDos]
+  );
 
   const editToDoLocal = (task: IToDo): void => {
     const newToDos: IToDo[] = [...toDos];
@@ -128,6 +138,10 @@ export default function ToDo(): JSX.Element {
     }
   };
 
+  const openCreator = (): void => setCreation(true);
+  const closeCreator = (): void => setCreation(false);
+  const closeTask = (): void => setSelectedTask(null);
+
   useEffect(() => {
     getDaysStatuses().then((data) => {
       setDaysStatuses(data);
@@ -151,50 +165,43 @@ export default function ToDo(): JSX.Element {
   }, [selectedDate]);
 
   return (
-    <div className={styles.container}>
-      <Header />
-      <Calendar
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        daysStatuses={daysStatuses}
-      />
-      <div className={styles.tasks}>
-        <p className={styles.tasksTitle}>Tasks</p>
-        <div className={styles.tasksList}>
-          {toDos.map((item) => {
-            return (
-              <Task
-                key={item.todoId}
-                task={item}
-                setSelectedTask={setSelectedTask}
-                checkDayStatuses={checkDayStatuses}
-              />
-            );
-          })}
-        </div>
-        <button
-          className={`${styles.createTaskBtn} c-btn-orange`}
-          type="button"
-          onClick={() => setCreation(true)}
-        >
-          Create task
-        </button>
-      </div>
-      {creation && (
-        <CreateTask
-          closeCreator={() => setCreation(false)}
-          addToDoLocal={addToDoLocal}
+    <ToDoContext.Provider
+      value={{ addToDoLocal, editToDoLocal, removeToDoLocal }}
+    >
+      <div className={styles.container}>
+        <Header />
+        <Calendar
           selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          daysStatuses={daysStatuses}
         />
-      )}
-      {selectedTask && (
-        <EditTask
-          closeTask={() => setSelectedTask(null)}
-          editToDoLocal={(task) => editToDoLocal(task)}
-          removeToDoLocal={(taskId) => removeToDoLocal(taskId)}
-          task={selectedTask}
-        />
-      )}
-    </div>
+        <div className={styles.tasks}>
+          <p className={styles.tasksTitle}>Tasks</p>
+          <div className={styles.tasksList}>
+            {toDos.map((item) => {
+              return (
+                <Task
+                  key={item.todoId}
+                  task={item}
+                  setSelectedTask={setSelectedTask}
+                  checkDayStatuses={checkDayStatuses}
+                />
+              );
+            })}
+          </div>
+          <button
+            className={`${styles.createTaskBtn} c-btn-orange`}
+            type="button"
+            onClick={openCreator}
+          >
+            Create task
+          </button>
+        </div>
+        {creation && (
+          <CreateTask closeCreator={closeCreator} selectedDate={selectedDate} />
+        )}
+        {selectedTask && <EditTask closeTask={closeTask} task={selectedTask} />}
+      </div>
+    </ToDoContext.Provider>
   );
 }

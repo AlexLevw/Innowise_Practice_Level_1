@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { useAuth } from "@contexts/AuthContext";
+import { useAuth } from "@contexts/index";
 import {
   HOME_ROUTE,
   REGISTER_ROUTE,

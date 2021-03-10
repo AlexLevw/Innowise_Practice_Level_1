@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import { useAuth } from "@contexts/AuthContext";
+import { useAuth } from "@contexts/index";
 import { LOGIN_ROUTE } from "@constants/routes";
 
 interface IPrivateRouteProps {

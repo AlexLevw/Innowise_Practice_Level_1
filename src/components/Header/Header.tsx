@@ -1,9 +1,9 @@
-import React from "react";
+import React, { memo } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { HOME_ROUTE, PROFILE_ROUTE } from "@constants/routes";
 import styles from "./_Header.module.scss";
 
-export default function Header(): JSX.Element {
+function HeaderInner(): JSX.Element {
   const history = useHistory();
   const activePage =
     history.location.pathname === PROFILE_ROUTE ? "profile" : "todo";
@@ -29,3 +29,7 @@ export default function Header(): JSX.Element {
     </div>
   );
 }
+
+const Header = memo(HeaderInner);
+
+export default Header;

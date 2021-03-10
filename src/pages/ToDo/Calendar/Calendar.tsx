@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { format, endOfMonth, addDays } from "date-fns";
 import Slider from "react-slick";
 import { IDayStatuses } from "@events/dbEvents";
@@ -16,6 +16,7 @@ export default function Calendar({
   setSelectedDate,
   daysStatuses,
 }: ICalendarProps): JSX.Element {
+  const [days, setDays] = useState<JSX.Element[]>();
   const sliderAdaptive = [
     {
       breakpoint: 660,
@@ -33,7 +34,7 @@ export default function Calendar({
     },
   ];
 
-  function createCalendar(): JSX.Element[] {
+  useEffect((): void => {
     const newDate: Date = new Date();
     const daysLeft: number = endOfMonth(newDate).getDate() - newDate.getDate();
     const result: JSX.Element[] = [];
@@ -57,8 +58,8 @@ export default function Calendar({
         />
       );
     }
-    return result;
-  }
+    setDays(result);
+  }, [daysStatuses, selectedDate, setSelectedDate]);
 
   return (
     <div className={styles.container}>
@@ -70,7 +71,7 @@ export default function Calendar({
         infinite={false}
         responsive={sliderAdaptive}
       >
-        {createCalendar()}
+        {days}
       </Slider>
     </div>
   );

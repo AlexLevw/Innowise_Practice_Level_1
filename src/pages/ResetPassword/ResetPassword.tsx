@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "@contexts/AuthContext";
+import { useAuth } from "@contexts/index";
 import { LOGIN_ROUTE, REGISTER_ROUTE } from "@constants/routes";
 import styles from "./_ResetPassword.module.scss";
 
